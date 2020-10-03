@@ -14,6 +14,7 @@ import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
+import { useAuth } from '../../hooks/auth';
 import getValidationErrors from '../../utils/getValidationErrors';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -28,6 +29,7 @@ import {
   CreateAccountText
 } from './styles';
 
+
 interface SignInFormData{
   email: string;
   password:string;
@@ -37,6 +39,7 @@ const SignIn: React.FC = () => {
   const navigation = useNavigation();
   const formRef = useRef<FormHandles>(null);
   const passwordInputRef = useRef<TextInput>(null);
+  const { signIn } = useAuth();
 
   const handleSignIn = useCallback(
     async (data: SignInFormData) => {
@@ -53,10 +56,11 @@ const SignIn: React.FC = () => {
         await schema.validate(data, {
           abortEarly: false,
         });
-        //await signIn({
-        //  email: data.email,
-        //  password: data.password,
-        //});
+
+        await signIn({
+          email: data.email,
+          password: data.password,
+        });
 
         //history.push('/dashboard');
       } catch (error) {
@@ -73,7 +77,7 @@ const SignIn: React.FC = () => {
         )
       }
     },
-    []
+    [signIn]
   );
 
   return(
